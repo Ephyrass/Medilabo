@@ -58,6 +58,10 @@ mongo-data/
 ### Docker ###
 docker-compose.override.yml
 
+### PDF Documentation ###
+PDF/
+*.pdf
+
 ### Temporary files ###
 *.tmp
 *.bak
