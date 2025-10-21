@@ -1,8 +1,10 @@
+version: '3.8'
+
 services:
   # MongoDB Database
   mongodb:
     image: mongo:6.0
-    container_name: MedilaboBDD
+    container_name: medilabo-mongodb
     ports:
       - "27017:27017"
     environment:
@@ -19,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Patient Microservice (Port 8081)
+  # Patient Microservice (Sprint 1)
   patient-service:
     build:
       context: ./patient-service
@@ -28,25 +30,6 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - medilabo-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Note Microservice (Port 8082)
-  note-service:
-    build:
-      context: ./note-service
-      dockerfile: Dockerfile
-    container_name: medilabo-note-service
-    ports:
-      - "8082:8082"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATA_MONGODB_URI=mongodb://admin:secret@mongodb:27017/medilabo?authSource=admin
     depends_on:
       mongodb:
@@ -54,35 +37,13 @@ services:
     networks:
       - medilabo-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
 
-  # Risk Assessment Microservice (Port 8083)
-  risk-service:
-    build:
-      context: ./risk-service
-      dockerfile: Dockerfile
-    container_name: medilabo-risk-service
-    ports:
-      - "8083:8083"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - PATIENT_SERVICE_URL=http://patient-service:8081
-      - NOTE_SERVICE_URL=http://note-service:8082
-    depends_on:
-      - patient-service
-      - note-service
-    networks:
-      - medilabo-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # API Gateway (Port 8080)
+  # API Gateway (Sprint 1)
   gateway:
     build:
       context: ./gateway
@@ -91,14 +52,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - PATIENT_SERVICE_URL=http://patient-service:8081
       - NOTE_SERVICE_URL=http://note-service:8082
       - RISK_SERVICE_URL=http://risk-service:8083
     depends_on:
-      - patient-service
-      - note-service
-      - risk-service
+      patient-service:
+        condition: service_healthy
     networks:
       - medilabo-network
     healthcheck:
@@ -106,25 +65,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-  # Frontend (Optional - Port 4200)
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: medilabo-frontend
-    ports:
-      - "4200:80"
-    depends_on:
-      - gateway
-    networks:
-      - medilabo-network
-
-volumes:
-  mongo-data:
-    driver: local
+      start_period: 40s
 
 networks:
   medilabo-network:
     driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
 
