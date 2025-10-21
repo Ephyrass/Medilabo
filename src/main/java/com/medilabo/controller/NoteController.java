@@ -21,27 +21,28 @@ public class NoteController {
 
     /**
      * Get all notes
-     * @return List of all notes with HTTP 200 status
+     * @return List of all notes
      */
     @GetMapping
-    public ResponseEntity<List<Note>> getAllNotes() {
-        return ResponseEntity.ok(noteService.getAllNotes());
+    public List<Note> getAllNotes() {
+        return noteService.getAllNotes();
     }
 
     /**
-     * Get notes for a specific patient
+     * Get notes for a specific patient - Vue historique du patient
+     * User Story: En tant que praticien, je veux voir l'historique des informations de mon patient
      * @param patientId The patient identifier
-     * @return List of notes for the patient with HTTP 200 status
+     * @return List of notes for the patient (complete medical history)
      */
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<List<Note>> getNotesByPatientId(@PathVariable String patientId) {
-        return ResponseEntity.ok(noteService.getNotesByPatientId(patientId));
+    public List<Note> getNotesByPatientId(@PathVariable String patientId) {
+        return noteService.getNotesByPatientId(patientId);
     }
 
     /**
      * Get a specific note by ID
      * @param id The note identifier
-     * @return The note with HTTP 200 status, or 404 if not found
+     * @return Note or 404
      */
     @GetMapping("/{id}")
     public ResponseEntity<Note> getNoteById(@PathVariable String id) {
@@ -51,36 +52,36 @@ public class NoteController {
     }
 
     /**
-     * Create a new note
+     * Create a new note - Ajouter une note à l'historique du patient
+     * User Story: En tant que praticien, je veux pouvoir ajouter une note d'observation
+     * à l'historique du patient afin de vérifier que mes conseils sont suivis d'une séance à l'autre
      * @param note The note to create
-     * @return The created note with HTTP 201 status
+     * @return Created note with generated ID and timestamp
      */
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestBody Note note) {
-        Note createdNote = noteService.createNote(note);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdNote);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Note createNote(@RequestBody Note note) {
+        return noteService.createNote(note);
     }
 
     /**
      * Update an existing note
      * @param id The note identifier
      * @param note The updated note data
-     * @return The updated note with HTTP 200 status
+     * @return Updated note
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Note> updateNote(@PathVariable String id, @RequestBody Note note) {
-        Note updatedNote = noteService.updateNote(id, note);
-        return ResponseEntity.ok(updatedNote);
+    public Note updateNote(@PathVariable String id, @RequestBody Note note) {
+        return noteService.updateNote(id, note);
     }
 
     /**
      * Delete a note
      * @param id The note identifier
-     * @return HTTP 204 No Content status
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNote(@PathVariable String id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteNote(@PathVariable String id) {
         noteService.deleteNote(id);
-        return ResponseEntity.noContent().build();
     }
 }

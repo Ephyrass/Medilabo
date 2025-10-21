@@ -18,4 +18,6 @@ public class Patient {
     private String lastName;
     private LocalDate birthDate;
     private String gender;
+    private String address; // Optional
+    private String phoneNumber; // Optional
 }

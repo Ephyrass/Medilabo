@@ -44,7 +44,7 @@ public class NoteService implements INoteService {
         return noteRepository.findById(id)
                 .map(existingNote -> {
                     existingNote.setContent(note.getContent());
-                    existingNote.setDoctorName(note.getDoctorName());
+                    existingNote.setPatientName(note.getPatientName());
                     return noteRepository.save(existingNote);
                 })
                 .orElseThrow(() -> new RuntimeException("Note not found with id: " + id));
@@ -55,4 +55,3 @@ public class NoteService implements INoteService {
         noteRepository.deleteById(id);
     }
 }
-

@@ -23,10 +23,9 @@ public class Note {
 
     private String patientId;
 
-    private String doctorName;
+    private String patientName;
 
     private LocalDateTime createdDate;
 
     private String content;
 }
-
