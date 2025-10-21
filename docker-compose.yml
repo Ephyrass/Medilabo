@@ -21,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Patient Microservice (Sprint 1)
+  # Patient Microservice
   patient-service:
     build:
       context: ./patient-service
@@ -43,7 +43,7 @@ services:
       retries: 3
       start_period: 40s
 
-  # API Gateway (Sprint 1)
+  # API Gateway
   gateway:
     build:
       context: ./gateway

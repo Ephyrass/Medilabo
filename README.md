@@ -1,10 +1,10 @@
-# Medilabo - Application de Gestion des Dossiers Patients
+# Medilabo - Patient Records Management Application
 
 ## 🏥 Description
 
-Medilabo est une application de gestion des dossiers patients basée sur une **architecture microservices**. Elle permet aux organisateurs et praticiens de gérer les informations des patients, leurs notes médicales et d'évaluer les risques de diabète.
+Medilabo is a patient records management application based on a **microservices architecture**. It allows organizers and practitioners to manage patient information, medical notes, and assess diabetes risks.
 
-## 🏗️ Architecture Microservices
+## 🏗️ Microservices Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -15,7 +15,7 @@ Medilabo est une application de gestion des dossiers patients basée sur une **a
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │           Spring Cloud Gateway (Port 8080)              │
-│  - Routage intelligent                                   │
+│  - Smart Routing                                         │
 │  - Circuit Breaker (Resilience4j)                       │
 │  - CORS Configuration                                    │
 │  - Retry Logic                                           │
@@ -42,84 +42,84 @@ Medilabo est une application de gestion des dossiers patients basée sur une **a
 ## 📦 Microservices
 
 ### 1. Patient Service (Port 8081) - ✅ Sprint 1
-Gestion des dossiers patients avec MongoDB.
+Patient records management with MongoDB.
 
-**Endpoints REST :**
-- `GET /api/patients` - Liste tous les patients
-- `GET /api/patients/{id}` - Détails d'un patient
-- `POST /api/patients` - Ajouter un patient
-- `PUT /api/patients/{id}` - Mettre à jour un patient
-- `DELETE /api/patients/{id}` - Supprimer un patient
+**REST Endpoints:**
+- `GET /api/patients` - List all patients
+- `GET /api/patients/{id}` - Get patient details
+- `POST /api/patients` - Add a patient
+- `PUT /api/patients/{id}` - Update a patient
+- `DELETE /api/patients/{id}` - Delete a patient
 
-**User Stories Sprint 1 :**
-- ✅ Vue des infos personnelles des patients
-- ✅ Mise à jour des informations personnelles
-- ✅ Ajouter des informations personnelles des patients
+**Sprint 1 User Stories:**
+- ✅ View patient personal information
+- ✅ Update personal information
+- ✅ Add patient personal information
 
 ### 2. Gateway (Port 8080) - ✅ Sprint 1
-Point d'entrée unique avec Spring Cloud Gateway.
+Single entry point with Spring Cloud Gateway.
 
-**Fonctionnalités :**
-- Routage vers les microservices
-- Circuit Breaker avec Resilience4j
-- Retry automatique (3 tentatives)
-- Configuration CORS
-- Fallback en cas d'erreur
+**Features:**
+- Routing to microservices
+- Circuit Breaker with Resilience4j
+- Automatic retry (3 attempts)
+- CORS configuration
+- Fallback on error
 
 ### 3. Note Service (Port 8082) - 🚧 Sprint 2
-Gestion des notes médicales avec MongoDB (à venir).
+Medical notes management with MongoDB (coming soon).
 
 ### 4. Risk Assessment Service (Port 8083) - 🚧 Sprint 3
-Évaluation du risque de diabète (à venir).
+Diabetes risk assessment (coming soon).
 
-## 🚀 Démarrage Rapide
+## 🚀 Quick Start
 
-### Prérequis
+### Prerequisites
 - Java 17
 - Maven
 - Docker & Docker Compose
 - MongoDB
 
-### 1. Démarrer MongoDB
+### 1. Start MongoDB
 ```bash
 docker-compose up -d mongodb
 ```
 
-### 2. Démarrer le Patient Service
+### 2. Start Patient Service
 ```bash
 cd patient-service
 mvnw.cmd spring-boot:run
 ```
 
-### 3. Démarrer le Gateway
+### 3. Start Gateway
 ```bash
 cd gateway
 mvnw.cmd spring-boot:run
 ```
 
-### 4. Tester l'API
+### 4. Test the API
 ```bash
-# Via le Gateway (recommandé)
+# Via Gateway (recommended)
 curl http://localhost:8080/api/patients
 
-# Directement au Patient Service
+# Directly to Patient Service
 curl http://localhost:8081/api/patients
 ```
 
-## 📊 Données de Test
+## 📊 Test Data
 
-L'application charge automatiquement 4 patients de test au démarrage :
+The application automatically loads 4 test patients on startup:
 
-1. **TestNone Test** (F, 58 ans) - Aucun risque
-2. **TestBorderline Test** (M, 79 ans) - Risque limité
-3. **TestInDanger Test** (M, 21 ans) - En danger
-4. **TestEarlyOnset Test** (F, 23 ans) - Apparition précoce
+1. **TestNone Test** (F, 58 years old) - No risk
+2. **TestBorderline Test** (M, 79 years old) - Borderline risk
+3. **TestInDanger Test** (M, 21 years old) - In danger
+4. **TestEarlyOnset Test** (F, 23 years old) - Early onset
 
 ## 🐳 Docker
 
-Chaque microservice possède son propre Dockerfile pour la conteneurisation.
+Each microservice has its own Dockerfile for containerization.
 
-### Build des images Docker
+### Build Docker images
 ```bash
 # Patient Service
 cd patient-service
@@ -132,28 +132,28 @@ mvnw.cmd clean package
 docker build -t medilabo/gateway .
 ```
 
-### Lancer tous les services avec Docker Compose
+### Launch all services with Docker Compose
 ```bash
 docker-compose up -d
 ```
 
-## 🛠️ Technologies Utilisées
+## 🛠️ Technologies Used
 
-- **Backend :** Spring Boot 3.5.6, Java 17
-- **API Gateway :** Spring Cloud Gateway
-- **Base de données :** MongoDB 6.0
-- **Résilience :** Resilience4j (Circuit Breaker)
-- **Build :** Maven
-- **Conteneurisation :** Docker
+- **Backend:** Spring Boot 3.5.6, Java 17
+- **API Gateway:** Spring Cloud Gateway
+- **Database:** MongoDB 6.0
+- **Resilience:** Resilience4j (Circuit Breaker)
+- **Build:** Maven
+- **Containerization:** Docker
 
-## 📁 Structure du Projet
+## 📁 Project Structure
 
 ```
 Medilabo/
-├── docker-compose.yml          # Orchestration Docker
-├── README.md                   # Ce fichier
-├── ARCHITECTURE.md             # Documentation détaillée de l'architecture
-├── patient-service/            # Microservice de gestion des patients
+├── docker-compose.yml          # Docker orchestration
+├── README.md                   # This file
+├── ARCHITECTURE.md             # Detailed architecture documentation
+├── patient-service/            # Patient management microservice
 │   ├── src/
 │   ├── pom.xml
 │   ├── Dockerfile
@@ -163,93 +163,92 @@ Medilabo/
 │   ├── pom.xml
 │   ├── Dockerfile
 │   └── mvnw.cmd
-├── note-service/               # À venir - Sprint 2
-├── risk-service/               # À venir - Sprint 3
-└── frontend/                   # À venir - Interface utilisateur
+├── note-service/               # Coming soon - Sprint 2
+├── risk-service/               # Coming soon - Sprint 3
+└── frontend/                   # Coming soon - User interface
 ```
 
 ## 🔄 Sprints
 
-### Sprint 1 - ✅ Terminé
-- [x] Architecture microservices avec Gateway
-- [x] Microservice Patient avec MongoDB
-- [x] Dockerisation
-- [x] Données de test des 4 patients
+### Sprint 1 - ✅ Completed
+- [x] Microservices architecture with Gateway
+- [x] Patient Microservice with MongoDB
+- [x] Dockerization
+- [x] Test data for 4 patients
 
-### Sprint 2 - 🚧 En cours
-- [ ] Microservice Note (MongoDB)
-- [ ] Gestion des notes médicales
-- [ ] Historique patient
+### Sprint 2 - 🚧 In Progress
+- [ ] Note Microservice (MongoDB)
+- [ ] Medical notes management
+- [ ] Patient history
 
-### Sprint 3 - 📋 À faire
-- [ ] Microservice Risk Assessment
-- [ ] Évaluation du risque de diabète
-- [ ] Règles métier pour les niveaux de risque
+### Sprint 3 - 📋 To Do
+- [ ] Risk Assessment Microservice
+- [ ] Diabetes risk assessment
+- [ ] Business rules for risk levels
 
 ## 📝 User Stories
 
 ### Sprint 1
-1. **Vue des infos personnelles des patients** ✅
-   - En tant qu'organisateur, j'aimerais voir les informations personnelles de mes patients
+1. **View patient personal information** ✅
+   - As an organizer, I would like to view my patients' personal information
 
-2. **Mise à jour des informations personnelles** ✅
-   - En tant qu'organisateur, j'aimerais mettre à jour les informations personnelles
+2. **Update personal information** ✅
+   - As an organizer, I would like to update personal information
 
-3. **Ajouter des informations personnelles** ✅
-   - En tant qu'organisateur, j'aimerais ajouter des informations personnelles
+3. **Add patient personal information** ✅
+   - As an organizer, I would like to add patient personal information
 
 ### Sprint 2
-4. **Vue historique du patient** 🚧
-   - En tant que praticien, je veux voir l'historique des informations de mon patient
+4. **View patient history** 🚧
+   - As a practitioner, I want to see my patient's information history
 
-5. **Ajouter une note à l'historique** 🚧
-   - En tant que praticien, je veux pouvoir ajouter une note d'observation
+5. **Add note to history** 🚧
+   - As a practitioner, I want to add an observation note
 
 ### Sprint 3
-6. **Générer un rapport de diabète** 📋
-   - En tant que praticien, je veux pouvoir consulter le risque de diabète
+6. **Generate diabetes report** 📋
+   - As a practitioner, I want to view diabetes risk
 
 ## 🧪 Tests
 
-### Tester l'ajout d'un patient
+### Test adding a patient
 ```bash
 curl -X POST http://localhost:8080/api/patients \
   -H "Content-Type: application/json" \
   -d '{
-    "firstName": "Jean",
-    "lastName": "Dupont",
+    "firstName": "John",
+    "lastName": "Doe",
     "birthDate": "1990-05-15",
     "gender": "M",
-    "address": "123 Rue de Paris",
+    "address": "123 Paris Street",
     "phoneNumber": "01-23-45-67-89"
   }'
 ```
 
-### Tester la mise à jour d'un patient
+### Test updating a patient
 ```bash
 curl -X PUT http://localhost:8080/api/patients/{id} \
   -H "Content-Type: application/json" \
   -d '{
-    "firstName": "Jean",
-    "lastName": "Dupont",
+    "firstName": "John",
+    "lastName": "Doe",
     "birthDate": "1990-05-15",
     "gender": "M",
-    "address": "456 Avenue des Champs",
+    "address": "456 Champs Avenue",
     "phoneNumber": "01-98-76-54-32"
   }'
 ```
 
-## 📖 Documentation Complémentaire
+## 📖 Additional Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Documentation détaillée de l'architecture
-- [GATEWAY_README.md](GATEWAY_README.md) - Documentation du Gateway
-- [PDF/](PDF/) - Documents de spécifications et cas de test
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Detailed architecture documentation
+- [GATEWAY_README.md](GATEWAY_README.md) - Gateway documentation
+- [PDF/](PDF/) - Specifications and test case documents
 
-## 👥 Équipe
+## 👥 Team
 
-Projet Medilabo - OpenClassrooms DA Java
+Medilabo Project - OpenClassrooms Java DA
 
-## 📄 Licence
+## 📄 License
 
-Projet éducatif - OpenClassrooms
-
+Educational Project - OpenClassrooms
