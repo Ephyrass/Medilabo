@@ -166,22 +166,22 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import PatientModal from './PatientModal.vue'
+import PatientNotesModal from './PatientNotesModal.vue'
 import ConfirmModal from './ConfirmModal.vue'
 
 const patients = ref([])
 const loading = ref(true)
-import PatientNotesModal from './PatientNotesModal.vue'
 const error = ref(null)
 const showModal = ref(false)
 const selectedPatient = ref(null)
 const showDeleteConfirm = ref(false)
 const patientToDelete = ref(null)
+const showNotesModal = ref(false)
+const selectedPatientForNotes = ref(null)
 
 const fetchPatients = async () => {
   loading.value = true
   error.value = null
-const showNotesModal = ref(false)
-const selectedPatientForNotes = ref(null)
   try {
     const res = await axios.get('/api/patients')
     patients.value = res.data

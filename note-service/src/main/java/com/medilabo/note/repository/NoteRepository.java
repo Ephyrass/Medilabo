@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
-    List<Note> findByPatientIdOrderByCreatedAtDesc(Long patientId);
+    List<Note> findByPatientIdOrderByCreatedAtDesc(String patientId);
 }
 

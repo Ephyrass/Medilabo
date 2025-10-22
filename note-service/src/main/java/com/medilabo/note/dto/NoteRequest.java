@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NoteRequest {
     @NotNull(message = "Patient ID is required")
-    private Long patientId;
+    private String patientId;
 
     @NotBlank(message = "Content cannot be empty")
     private String content;

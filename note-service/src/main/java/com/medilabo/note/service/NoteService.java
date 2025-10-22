@@ -14,12 +14,12 @@ import java.util.List;
 public class NoteService {
     private final NoteRepository noteRepository;
 
-    public List<Note> getNotesByPatientId(Long patientId) {
+    public List<Note> getNotesByPatientId(String patientId) {
         log.info("Fetching notes for patient ID: {}", patientId);
         return noteRepository.findByPatientIdOrderByCreatedAtDesc(patientId);
     }
 
-    public Note createNote(Long patientId, String content, String authorName) {
+    public Note createNote(String patientId, String content, String authorName) {
         log.info("Creating note for patient ID: {}", patientId);
         Note note = new Note(patientId, content, authorName);
         return noteRepository.save(note);

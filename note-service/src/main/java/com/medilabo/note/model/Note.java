@@ -16,7 +16,7 @@ public class Note {
     @Id
     private String id;
 
-    private Long patientId;
+    private String patientId;
 
     private String content;
 
@@ -24,7 +24,7 @@ public class Note {
 
     private String authorName; // Nom du praticien
 
-    public Note(Long patientId, String content, String authorName) {
+    public Note(String patientId, String content, String authorName) {
         this.patientId = patientId;
         this.content = content;
         this.authorName = authorName;
