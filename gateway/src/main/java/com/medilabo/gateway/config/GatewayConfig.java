@@ -22,9 +22,9 @@ public class GatewayConfig {
                                         .setName("patientServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/patients"))
                                 .retry(config -> config.setRetries(3)))
-                        .uri("http://localhost:8081"))
+                        .uri("http://patient-service:8081"))
 
-                // Route vers Note Service (Sprint 2 - à venir)
+                // Route vers Note Service (Sprint 2)
                 .route("note-service", r -> r
                         .path("/api/notes/**")
                         .filters(f -> f
@@ -32,7 +32,7 @@ public class GatewayConfig {
                                         .setName("noteServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/notes"))
                                 .retry(config -> config.setRetries(3)))
-                        .uri("http://localhost:8082"))
+                        .uri("http://note-service:8082"))
 
                 // Route vers Risk Assessment Service (Sprint 3 - à venir)
                 .route("risk-service", r -> r

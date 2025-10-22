@@ -72,6 +72,16 @@ Medical notes management with MongoDB (coming soon).
 ### 4. Risk Assessment Service (Port 8083) - 🚧 Sprint 3
 Diabetes risk assessment (coming soon).
 
+### 5. Frontend (Port 80 / 3000) - ✅ Sprint 1
+Vue 3 + Vite + Tailwind CSS user interface.
+
+**Features:**
+- List all patients
+- Responsive design with Tailwind CSS
+- Development mode with hot reload (Vite)
+- Production build with nginx
+- API calls proxied to Gateway
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -79,23 +89,49 @@ Diabetes risk assessment (coming soon).
 - Maven
 - Docker & Docker Compose
 - MongoDB
+- Node.js 18+ (for local frontend development)
 
-### 1. Start MongoDB
+### Option 1: Run everything with Docker Compose (Recommended)
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- MongoDB on port 27017
+- Patient Service on port 8081
+- Gateway on port 8080
+- Frontend on port 80 (http://localhost)
+
+Access the application at **http://localhost**
+
+### Option 2: Run services individually
+
+#### 1. Start MongoDB
 ```bash
 docker-compose up -d mongodb
 ```
 
-### 2. Start Patient Service
+#### 2. Start Patient Service
 ```bash
 cd patient-service
 mvnw.cmd spring-boot:run
 ```
 
-### 3. Start Gateway
+#### 3. Start Gateway
 ```bash
 cd gateway
 mvnw.cmd spring-boot:run
 ```
+
+#### 4. Start Frontend (development mode)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Access the application at **http://localhost:3000**
 
 ### 4. Test the API
 ```bash
@@ -241,9 +277,9 @@ curl -X PUT http://localhost:8080/api/patients/{id} \
 
 ## 📖 Additional Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Detailed architecture documentation
-- [GATEWAY_README.md](GATEWAY_README.md) - Gateway documentation
-- [PDF/](PDF/) - Specifications and test case documents
+- ARCHITECTURE.md — Detailed architecture documentation
+- gateway/README.md — Gateway documentation (see gateway/README.md)
+- PDF/ — Specifications and test case documents
 
 ## 👥 Team
 
