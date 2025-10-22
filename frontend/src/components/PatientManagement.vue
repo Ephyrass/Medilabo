@@ -100,6 +100,35 @@
                   {{ patient.address }}
                 </div>
               </div>
+
+              <!-- Diabetes Risk Assessment (Sprint 3) -->
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Diabetes Risk:</span>
+                  </div>
+                  <div v-if="patient.riskAssessment && !patient.riskLoading">
+                    <span
+                      :class="getRiskBadgeClass(patient.riskAssessment.riskLevel)"
+                      class="px-3 py-1 rounded-full text-xs font-semibold"
+                    >
+                      {{ patient.riskAssessment.riskLevel }}
+                    </span>
+                  </div>
+                  <div v-else-if="patient.riskLoading" class="text-sm text-gray-500">
+                    <span class="animate-pulse">Evaluating...</span>
+                  </div>
+                  <div v-else class="text-sm text-gray-400">
+                    Not assessed
+                  </div>
+                </div>
+                <div v-if="patient.riskAssessment && patient.riskAssessment.triggerCount > 0" class="mt-2 text-xs text-gray-600">
+                  {{ patient.riskAssessment.triggerCount }} trigger(s) detected
+                </div>
+              </div>
             </div>
 
             <div class="flex space-x-2 ml-4">
@@ -185,12 +214,33 @@ const fetchPatients = async () => {
   try {
     const res = await axios.get('/api/patients')
     patients.value = res.data
+
+    // Fetch risk assessment for each patient (Sprint 3)
+    await fetchRiskAssessments()
   } catch (err) {
     error.value = err.message || 'Failed to fetch patients'
     console.error('Error fetching patients:', err)
   } finally {
     loading.value = false
   }
+}
+
+const fetchRiskAssessments = async () => {
+  // Fetch risk assessment for each patient in parallel
+  const riskPromises = patients.value.map(async (patient) => {
+    patient.riskLoading = true
+    try {
+      const response = await axios.get(`/api/risk/${patient.id}`)
+      patient.riskAssessment = response.data
+    } catch (err) {
+      console.warn(`Could not fetch risk for patient ${patient.id}:`, err.message)
+      patient.riskAssessment = null
+    } finally {
+      patient.riskLoading = false
+    }
+  })
+
+  await Promise.all(riskPromises)
 }
 
 const openAddModal = () => {
@@ -279,6 +329,16 @@ const calculateAge = (birthDate) => {
     age--
   }
   return age
+}
+
+const getRiskBadgeClass = (riskLevel) => {
+  const classes = {
+    'NONE': 'bg-green-100 text-green-800',
+    'BORDERLINE': 'bg-yellow-100 text-yellow-800',
+    'IN_DANGER': 'bg-orange-100 text-orange-800',
+    'EARLY_ONSET': 'bg-red-100 text-red-800'
+  }
+  return classes[riskLevel] || 'bg-gray-100 text-gray-800'
 }
 
 onMounted(() => {

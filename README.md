@@ -49,6 +49,27 @@ Patient records management with MongoDB.
 - `GET /api/patients/{id}` - Get patient details
 - `POST /api/patients` - Add a patient
 - `PUT /api/patients/{id}` - Update a patient
+
+### 2. Note Service (Port 8082) - ✅ Sprint 2
+Medical notes management with MongoDB.
+
+**REST Endpoints:**
+- `GET /api/notes/patient/{patientId}` - Get notes for a patient
+- `POST /api/notes` - Add a medical note
+- `PUT /api/notes/{id}` - Update a note
+- `DELETE /api/notes/{id}` - Delete a note
+
+### 3. Risk Assessment Service (Port 8083) - ✅ Sprint 3
+Diabetes risk assessment based on patient data and medical notes.
+
+**REST Endpoints:**
+- `GET /api/risk/{patientId}` - Assess diabetes risk for a patient
+
+**Risk Levels:**
+- **None** - No diabetes risk detected
+- **Borderline** - Limited risk (30+ years, 2-5 triggers)
+- **In Danger** - Moderate risk (varies by age/gender)
+- **Early Onset** - High risk (multiple triggers detected)
 - `DELETE /api/patients/{id}` - Delete a patient
 
 **Sprint 1 User Stories:**

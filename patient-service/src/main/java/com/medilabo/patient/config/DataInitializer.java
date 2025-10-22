@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 /**
- * Initialisation des données de test - Sprint 1
- * Charge les 4 cas de test patients
+ * Initialisation des données de test - Sprint 1 & 2
+ * Charge les 4 patients de test pour les évaluations de risque
  */
 @Component
 @RequiredArgsConstructor
@@ -22,53 +22,43 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (patientRepository.count() == 0) {
-            log.info("Initialisation des données de test - 4 cas de test patients");
+        // Vérifier si les patients de test existent déjà
+        if (patientRepository.count() < 4) {
+            log.info("Initialisation des 4 patients de test");
 
             // Patient 1: TestNone - Aucun risque
-            Patient patient1 = new Patient();
-            patient1.setFirstName("TestNone");
-            patient1.setLastName("Test");
-            patient1.setBirthDate(LocalDate.of(1966, 12, 31));
-            patient1.setGender("F");
-            patient1.setAddress("1 Brookside St");
-            patient1.setPhoneNumber("100-222-3333");
-            patientRepository.save(patient1);
+            createPatient("Test", "TestNone", LocalDate.of(1966, 12, 31), "F",
+                "1 Brookside St", "100-222-3333");
 
             // Patient 2: TestBorderline - Risque limité
-            Patient patient2 = new Patient();
-            patient2.setFirstName("TestBorderline");
-            patient2.setLastName("Test");
-            patient2.setBirthDate(LocalDate.of(1945, 6, 24));
-            patient2.setGender("M");
-            patient2.setAddress("2 High St");
-            patient2.setPhoneNumber("200-333-4444");
-            patientRepository.save(patient2);
+            createPatient("Test", "TestBorderline", LocalDate.of(1945, 6, 24), "M",
+                "2 High St", "200-333-4444");
 
             // Patient 3: TestInDanger - En danger
-            Patient patient3 = new Patient();
-            patient3.setFirstName("TestInDanger");
-            patient3.setLastName("Test");
-            patient3.setBirthDate(LocalDate.of(2004, 6, 18));
-            patient3.setGender("M");
-            patient3.setAddress("3 Club Road");
-            patient3.setPhoneNumber("300-444-5555");
-            patientRepository.save(patient3);
+            createPatient("Test", "TestInDanger", LocalDate.of(2004, 6, 18), "M",
+                "3 Club Road", "300-444-5555");
 
             // Patient 4: TestEarlyOnset - Apparition précoce
-            Patient patient4 = new Patient();
-            patient4.setFirstName("TestEarlyOnset");
-            patient4.setLastName("Test");
-            patient4.setBirthDate(LocalDate.of(2002, 6, 28));
-            patient4.setGender("F");
-            patient4.setAddress("4 Valley Dr");
-            patient4.setPhoneNumber("400-555-6666");
-            patientRepository.save(patient4);
+            createPatient("Test", "TestEarlyOnset", LocalDate.of(2002, 6, 28), "F",
+                "4 Valley Dr", "400-555-6666");
 
-            log.info("Données de test initialisées: {} patients créés", patientRepository.count());
+            log.info("4 patients de test créés avec succès");
         } else {
-            log.info("Base de données déjà initialisée avec {} patients", patientRepository.count());
+            log.info("Patients de test déjà existants dans la base de données");
         }
+    }
+
+    private void createPatient(String firstName, String lastName, LocalDate birthDate,
+                              String gender, String address, String phoneNumber) {
+        Patient patient = new Patient();
+        patient.setFirstName(firstName);
+        patient.setLastName(lastName);
+        patient.setBirthDate(birthDate);
+        patient.setGender(gender);
+        patient.setAddress(address);
+        patient.setPhoneNumber(phoneNumber);
+        patientRepository.save(patient);
+        log.debug("Patient créé: {} {}", firstName, lastName);
     }
 }
 

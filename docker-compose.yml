@@ -52,6 +52,23 @@ services:
     networks:
       - medilabo-network
 
+  # Risk Assessment Service (Sprint 3)
+  risk-service:
+    build:
+      context: ./risk-service
+      dockerfile: Dockerfile
+    container_name: medilabo-risk-service
+    ports:
+      - "8083:8083"
+    environment:
+      - PATIENT_SERVICE_URL=http://patient-service:8081
+      - NOTE_SERVICE_URL=http://note-service:8082
+    depends_on:
+      - patient-service
+      - note-service
+    networks:
+      - medilabo-network
+
   # API Gateway
   gateway:
     build:
@@ -66,6 +83,7 @@ services:
       - RISK_SERVICE_URL=http://risk-service:8083
     depends_on:
       - patient-service
+      - risk-service
     networks:
       - medilabo-network
 

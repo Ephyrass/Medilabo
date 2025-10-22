@@ -34,15 +34,15 @@ public class GatewayConfig {
                                 .retry(config -> config.setRetries(3)))
                         .uri("http://note-service:8082"))
 
-                // Route vers Risk Assessment Service (Sprint 3 - à venir)
+                // Route vers Risk Assessment Service (Sprint 3)
                 .route("risk-service", r -> r
-                        .path("/api/assess/**")
+                        .path("/api/risk/**")
                         .filters(f -> f
                                 .circuitBreaker(config -> config
                                         .setName("riskServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/risk"))
                                 .retry(config -> config.setRetries(3)))
-                        .uri("http://localhost:8083"))
+                        .uri("http://risk-service:8083"))
 
                 .build();
     }
