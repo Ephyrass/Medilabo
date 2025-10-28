@@ -112,7 +112,7 @@ class RiskAssessmentServiceTest {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
             createNote("1", "Patient is Smoker"),
-            createNote("1", "Height: 180cm, Weight: 95kg"),
+            createNote("1", "Height: 180cm"),
             createNote("1", "Cholesterol levels are concerning")
         );
         when(microserviceClient.getPatient("1")).thenReturn(youngMalePatient);
