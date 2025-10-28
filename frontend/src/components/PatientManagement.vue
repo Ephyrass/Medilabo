@@ -115,7 +115,7 @@
                       :class="getRiskBadgeClass(patient.riskAssessment.riskLevel)"
                       class="px-3 py-1 rounded-full text-xs font-semibold"
                     >
-                      {{ patient.riskAssessment.riskLevel }}
+                      {{ formatRiskLevel(patient.riskAssessment.riskLevel) }}
                     </span>
                   </div>
                   <div v-else-if="patient.riskLoading" class="text-sm text-gray-500">
@@ -339,6 +339,16 @@ const getRiskBadgeClass = (riskLevel) => {
     'EARLY_ONSET': 'bg-red-100 text-red-800'
   }
   return classes[riskLevel] || 'bg-gray-100 text-gray-800'
+}
+
+const formatRiskLevel = (riskLevel) => {
+  const labels = {
+    'NONE': 'None',
+    'BORDERLINE': 'Borderline',
+    'IN_DANGER': 'In Danger',
+    'EARLY_ONSET': 'Early Onset'
+  }
+  return labels[riskLevel] || riskLevel
 }
 
 onMounted(() => {
