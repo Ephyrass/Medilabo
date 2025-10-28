@@ -8,13 +8,26 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository pour les patients - Sprint 1 (MongoDB)
+ * Repository for patients
  */
 @Repository
 public interface PatientRepository extends MongoRepository<Patient, String> {
 
+    /**
+     * Find a patient by last name and first name
+     *
+     * @param lastName the patient's last name
+     * @param firstName the patient's first name
+     * @return optional containing the patient if found
+     */
     Optional<Patient> findByLastNameAndFirstName(String lastName, String firstName);
 
+    /**
+     * Find all patients by last name
+     *
+     * @param lastName the patient's last name
+     * @return list of patients with the given last name
+     */
     List<Patient> findByLastName(String lastName);
 }
 

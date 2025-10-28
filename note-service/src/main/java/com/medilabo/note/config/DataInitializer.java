@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * Initialisation des données de test - Sprint 2
- * Charge les notes pour les 4 cas de test patients
+ * Test data initialization
+ * Loads notes for the 4 test patients
  */
 @Component
 @RequiredArgsConstructor
@@ -28,60 +28,74 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (noteRepository.count() == 0) {
-            log.info("Initialisation des notes de test pour les 4 patients");
+            log.info("Initializing test notes for the 4 patients");
 
-            // Récupérer les IDs réels des patients depuis la base de données
+            // Retrieve actual patient IDs from the database
             String testNoneId = getPatientIdByLastName("TestNone");
             String testBorderlineId = getPatientIdByLastName("TestBorderline");
             String testInDangerId = getPatientIdByLastName("TestInDanger");
             String testEarlyOnsetId = getPatientIdByLastName("TestEarlyOnset");
 
             if (testNoneId != null) {
-                // Notes pour Patient 1: TestNone - Aucun risque
-                createNote(testNoneId, "Le patient déclare qu'il se sent très bien. Poids égal ou inférieur au poids recommandé", "Dr. Smith", LocalDateTime.now().minusMonths(6));
+                // Notes for Patient 1: TestNone - No risk
+                createNote(testNoneId, "Patient states that they are feeling terrific Weight at or below recommended", "Dr. Smith", LocalDateTime.now().minusMonths(6));
             }
 
             if (testBorderlineId != null) {
-                // Notes pour Patient 2: TestBorderline - Risque limité
-                createNote(testBorderlineId, "Le patient déclare qu'il ressent beaucoup de stress au travail. Il se plaint également que son audition est anormale dernièrement", "Dr. Johnson", LocalDateTime.now().minusMonths(12));
-                createNote(testBorderlineId, "Le patient déclare avoir fait une réaction aux médicaments au cours des 3 derniers mois. Il remarque également que son audition continue d'être anormale", "Dr. Johnson", LocalDateTime.now().minusMonths(6));
+                // Notes for Patient 2: TestBorderline - Borderline risk
+                createNote(testBorderlineId, "Patient states that they are feeling a great deal of stress at work Patient also complains that their hearing seems abnormal as of late", "Dr. Johnson", LocalDateTime.now().minusMonths(12));
+                createNote(testBorderlineId, "Patient states that they had a reaction to medication within last 3 months Patient also complains that their hearing continues to be abnormal", "Dr. Johnson", LocalDateTime.now().minusMonths(6));
             }
 
             if (testInDangerId != null) {
-                // Notes pour Patient 3: TestInDanger - En danger
-                createNote(testInDangerId, "Le patient déclare qu'il fume depuis peu", "Dr. Williams", LocalDateTime.now().minusMonths(18));
-                createNote(testInDangerId, "Le patient déclare qu'il est fumeur et qu'il a cessé de fumer l'année dernière. Il se plaint également de crises d'apnée respiratoire anormales. Tests de laboratoire indiquant un taux de cholestérol LDL élevé", "Dr. Williams", LocalDateTime.now().minusMonths(12));
+                // Notes for Patient 3: TestInDanger - In Danger
+                createNote(testInDangerId, "Patient states that they are short term Smoker", "Dr. Williams", LocalDateTime.now().minusMonths(18));
+                createNote(testInDangerId, "Patient states that they quit within last year Patient also complains that they are experiencing abnormal breathing spells Lab reports Cholesterol LDL high", "Dr. Williams", LocalDateTime.now().minusMonths(12));
             }
 
             if (testEarlyOnsetId != null) {
-                // Notes pour Patient 4: TestEarlyOnset - Apparition précoce
-                createNote(testEarlyOnsetId, "Le patient déclare qu'il lui est devenu difficile de monter les escaliers. Il se plaint également d'être essoufflé. Tests de laboratoire indiquant que les anticorps sont élevés. Réaction aux médicaments", "Dr. Brown", LocalDateTime.now().minusMonths(24));
-                createNote(testEarlyOnsetId, "Le patient déclare qu'il a mal au dos lorsqu'il reste assis pendant longtemps", "Dr. Brown", LocalDateTime.now().minusMonths(18));
-                createNote(testEarlyOnsetId, "Le patient déclare avoir commencé à fumer depuis peu. Hémoglobine A1C supérieure au niveau recommandé", "Dr. Brown", LocalDateTime.now().minusMonths(12));
-                createNote(testEarlyOnsetId, "Taille, Poids, Cholestérol, Vertige et Réaction", "Dr. Brown", LocalDateTime.now().minusMonths(6));
+                // Notes for Patient 4: TestEarlyOnset - Early onset
+                createNote(testEarlyOnsetId, "Patient states that walking up stairs has become difficult Patient also complains that they are having shortness of breath Lab results indicate Antibodies present elevated Reaction to medication", "Dr. Brown", LocalDateTime.now().minusMonths(24));
+                createNote(testEarlyOnsetId, "Patient states that they are experiencing back pain when seated for a long time", "Dr. Brown", LocalDateTime.now().minusMonths(18));
+                createNote(testEarlyOnsetId, "Patient states that they are a short term Smoker Hemoglobin A1C above recommended level", "Dr. Brown", LocalDateTime.now().minusMonths(12));
+                createNote(testEarlyOnsetId, "Body Height, Body Weight, Cholesterol, Dizziness and Reaction", "Dr. Brown", LocalDateTime.now().minusMonths(6));
             }
 
-            log.info("Données de test initialisées: {} notes créées pour les patients de test", noteRepository.count());
+            log.info("Test data initialized: {} notes created for test patients", noteRepository.count());
         } else {
-            log.info("Base de données déjà initialisée avec {} notes", noteRepository.count());
+            log.info("Database already initialized with {} notes", noteRepository.count());
         }
     }
 
+    /**
+     * Get patient ID by last name from MongoDB
+     *
+     * @param lastName the patient's last name
+     * @return the patient ID or null if not found
+     */
     private String getPatientIdByLastName(String lastName) {
         try {
             Query query = new Query(Criteria.where("lastName").is(lastName));
             Map<String, Object> patient = mongoTemplate.findOne(query, Map.class, "patients");
             if (patient != null && patient.containsKey("_id")) {
                 String id = patient.get("_id").toString();
-                log.debug("Patient {} trouvé avec ID: {}", lastName, id);
+                log.debug("Patient {} found with ID: {}", lastName, id);
                 return id;
             }
         } catch (Exception e) {
-            log.warn("Patient {} non trouvé: {}", lastName, e.getMessage());
+            log.warn("Patient {} not found: {}", lastName, e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Create and save a note
+     *
+     * @param patientId the patient ID
+     * @param content the note content
+     * @param authorName the author name
+     * @param createdAt the creation date
+     */
     private void createNote(String patientId, String content, String authorName, LocalDateTime createdAt) {
         Note note = new Note();
         note.setPatientId(patientId);
@@ -89,7 +103,7 @@ public class DataInitializer implements CommandLineRunner {
         note.setAuthorName(authorName);
         note.setCreatedAt(createdAt);
         noteRepository.save(note);
-        log.debug("Note créée pour le patient {}: {}", patientId, content.substring(0, Math.min(50, content.length())) + "...");
+        log.debug("Note created for patient {}: {}", patientId, content.substring(0, Math.min(50, content.length())) + "...");
     }
 }
 

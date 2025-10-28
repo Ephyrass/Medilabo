@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service de gestion des patients - Sprint 1
- * Implémente les user stories du premier sprint
+ * Patient management service
  */
 @Service
 @RequiredArgsConstructor
@@ -23,37 +22,49 @@ public class PatientService {
     private final PatientRepository patientRepository;
 
     /**
-     * Vue des infos personnelles des patients
-     * User Story: En tant qu'organisateur, j'aimerais voir les informations personnelles de mes patients
+     * View personal information of patients
+     * User Story: As an organizer, I would like to view the personal information of my patients
+     *
+     * @return list of all patients
      */
     public List<Patient> getAllPatients() {
-        log.info("Récupération de tous les patients");
+        log.info("Fetching all patients");
         return patientRepository.findAll();
     }
 
     /**
-     * Vue des infos personnelles d'un patient
+     * View personal information of a patient
+     *
+     * @param id the patient ID
+     * @return optional containing the patient if found
      */
     public Optional<Patient> getPatientById(String id) {
-        log.info("Récupération du patient avec l'ID: {}", id);
+        log.info("Fetching patient with ID: {}", id);
         return patientRepository.findById(id);
     }
 
     /**
-     * Ajouter des informations personnelles des patients
-     * User Story: En tant qu'organisateur, j'aimerais ajouter des informations personnelles aux patients
+     * Add personal information of patients
+     * User Story: As an organizer, I would like to add personal information to patients
+     *
+     * @param patient the patient to add
+     * @return the saved patient
      */
     public Patient addPatient(Patient patient) {
-        log.info("Ajout d'un nouveau patient: {} {}", patient.getFirstName(), patient.getLastName());
+        log.info("Adding new patient: {} {}", patient.getFirstName(), patient.getLastName());
         return patientRepository.save(patient);
     }
 
     /**
-     * Mise à jour des informations personnelles
-     * User Story: En tant qu'organisateur, j'aimerais mettre à jour les informations personnelles de mes patients
+     * Update personal information
+     * User Story: As an organizer, I would like to update the personal information of my patients
+     *
+     * @param id the patient ID
+     * @param patientDetails the updated patient details
+     * @return optional containing the updated patient if found
      */
     public Optional<Patient> updatePatient(String id, Patient patientDetails) {
-        log.info("Mise à jour du patient avec l'ID: {}", id);
+        log.info("Updating patient with ID: {}", id);
         return patientRepository.findById(id)
                 .map(patient -> {
                     patient.setFirstName(patientDetails.getFirstName());
@@ -67,10 +78,13 @@ public class PatientService {
     }
 
     /**
-     * Supprimer un patient
+     * Delete a patient
+     *
+     * @param id the patient ID
+     * @return true if deleted, false if not found
      */
     public boolean deletePatient(String id) {
-        log.info("Suppression du patient avec l'ID: {}", id);
+        log.info("Deleting patient with ID: {}", id);
         if (patientRepository.existsById(id)) {
             patientRepository.deleteById(id);
             return true;

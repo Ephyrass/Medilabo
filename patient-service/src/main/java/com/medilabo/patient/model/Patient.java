@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 
 /**
- * Patient entity - Sprint 1 avec MongoDB
- * Représente les informations personnelles d'un patient
+ * Patient entity
+ * Represents personal information of a patient
  */
 @Document(collection = "patients")
 @Data
@@ -24,20 +24,20 @@ public class Patient {
     @Id
     private String id;
 
-    @NotBlank(message = "Le prénom est obligatoire")
+    @NotBlank(message = "First name is required")
     private String firstName;
 
-    @NotBlank(message = "Le nom est obligatoire")
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @NotNull(message = "La date de naissance est obligatoire")
-    @Past(message = "La date de naissance doit être dans le passé")
+    @NotNull(message = "Birth date is required")
+    @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 
-    @NotBlank(message = "Le genre est obligatoire")
-    private String gender; // M ou F
+    @NotBlank(message = "Gender is required")
+    private String gender; // M or F
 
-    // Optionnels selon les exigences
+    // Optional according to requirements
     private String address;
 
     private String phoneNumber;

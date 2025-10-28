@@ -7,18 +7,25 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * DTO pour récupérer les informations du patient depuis le patient-service
+ * DTO to retrieve patient information from patient-service
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PatientDTO {
+
     private String id;
+
     private String firstName;
+
     private String lastName;
+
     private LocalDate birthDate;
-    private String gender; // M ou F
+
+    private String gender; // M or F
+
     private String address;
+
     private String phoneNumber;
 }
 

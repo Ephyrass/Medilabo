@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * Service pour communiquer avec les autres microservices
+ * Service to communicate with other microservices
  */
 @Service
 @Slf4j
@@ -26,12 +26,21 @@ public class MicroserviceClientService {
     @Value("${note.service.url}")
     private String noteServiceUrl;
 
+    /**
+     * Constructor that initializes the WebClient
+     *
+     * @param webClientBuilder the WebClient builder
+     */
     public MicroserviceClientService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
     /**
-     * Récupère les informations d'un patient
+     * Retrieve patient information
+     *
+     * @param patientId the patient ID
+     * @return the patient data
+     * @throws RuntimeException if patient cannot be fetched
      */
     public PatientDTO getPatient(String patientId) {
         log.info("Fetching patient with ID: {}", patientId);
@@ -48,7 +57,10 @@ public class MicroserviceClientService {
     }
 
     /**
-     * Récupère toutes les notes d'un patient
+     * Retrieve all notes for a patient
+     *
+     * @param patientId the patient ID
+     * @return list of patient notes, empty list if none found
      */
     public List<NoteDTO> getPatientNotes(String patientId) {
         log.info("Fetching notes for patient ID: {}", patientId);
@@ -60,7 +72,7 @@ public class MicroserviceClientService {
                     .block();
         } catch (Exception e) {
             log.error("Error fetching notes for patient {}: {}", patientId, e.getMessage());
-            // Retourner une liste vide si aucune note n'est trouvée
+            // Return empty list if no notes found
             return List.of();
         }
     }

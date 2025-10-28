@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Service pour évaluer le risque de diabète d'un patient
- * Basé sur l'algorithme du Sprint 3
+ * Service to assess diabetes risk for a patient
  */
 @Service
 @RequiredArgsConstructor
@@ -25,48 +24,50 @@ public class RiskAssessmentService {
 
     private final MicroserviceClientService microserviceClient;
 
-    // Liste des déclencheurs de diabète (termes médicaux)
+    // List of diabetes triggers (medical terms)
     private static final List<String> DIABETES_TRIGGERS = Arrays.asList(
-            "hémoglobine a1c",
-            "microalbumine",
-            "taille",
-            "poids",
-            "fumeur",
-            "fumeuse",
-            "anormal",
-            "cholestérol",
-            "vertiges",
-            "vertige",
-            "rechute",
-            "réaction",
-            "anticorps"
+            "hemoglobin a1c",
+            "microalbumin",
+            "height",
+            "weight",
+            "smoker",
+            "abnormal",
+            "cholesterol",
+            "dizziness",
+            "relapse",
+            "reaction",
+            "antibodies"
     );
 
     /**
-     * Évalue le risque de diabète pour un patient donné
+     * Assess diabetes risk for a given patient
+     *
+     * @param patientId the patient ID
+     * @return the risk assessment result
+     * @throws RuntimeException if patient not found
      */
     public RiskAssessmentDTO assessDiabetesRisk(String patientId) {
         log.info("Assessing diabetes risk for patient ID: {}", patientId);
 
-        // 1. Récupérer les informations du patient
+        // 1. Retrieve patient information
         PatientDTO patient = microserviceClient.getPatient(patientId);
         if (patient == null) {
             throw new RuntimeException("Patient not found with ID: " + patientId);
         }
 
-        // 2. Récupérer les notes du patient
+        // 2. Retrieve patient notes
         List<NoteDTO> notes = microserviceClient.getPatientNotes(patientId);
 
-        // 3. Calculer l'âge du patient
+        // 3. Calculate patient age
         int age = calculateAge(patient.getBirthDate());
 
-        // 4. Compter les déclencheurs dans les notes
+        // 4. Count triggers in notes
         int triggerCount = countTriggers(notes);
 
-        // 5. Déterminer le niveau de risque
+        // 5. Determine risk level
         RiskLevel riskLevel = determineRiskLevel(age, patient.getGender(), triggerCount);
 
-        // 6. Construire le message
+        // 6. Build message
         String message = buildRiskMessage(patient, age, riskLevel, triggerCount);
 
         log.info("Risk assessment completed for patient {}: {} (triggers: {})",
@@ -84,32 +85,38 @@ public class RiskAssessmentService {
     }
 
     /**
-     * Calcule l'âge d'un patient à partir de sa date de naissance
+     * Calculate patient age from birth date
+     *
+     * @param birthDate the birth date
+     * @return the age in years
      */
     private int calculateAge(LocalDate birthDate) {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     /**
-     * Compte le nombre de déclencheurs de diabète dans les notes
+     * Count the number of diabetes triggers in notes
+     *
+     * @param notes the list of medical notes
+     * @return the count of unique triggers found
      */
     private int countTriggers(List<NoteDTO> notes) {
         if (notes == null || notes.isEmpty()) {
             return 0;
         }
 
-        // Concaténer toutes les notes en un seul texte
+        // Concatenate all notes into one text
         StringBuilder allNotes = new StringBuilder();
         for (NoteDTO note : notes) {
             if (note.getContent() != null) {
-                allNotes.append(note.getContent().toLowerCase(Locale.FRENCH)).append(" ");
+                allNotes.append(note.getContent().toLowerCase(Locale.ENGLISH)).append(" ");
             }
         }
 
         String fullText = allNotes.toString();
         int count = 0;
 
-        // Compter chaque déclencheur (chaque déclencheur ne compte qu'une fois)
+        // Count each trigger (each trigger counts only once)
         for (String trigger : DIABETES_TRIGGERS) {
             if (fullText.contains(trigger.toLowerCase())) {
                 count++;
@@ -121,27 +128,32 @@ public class RiskAssessmentService {
     }
 
     /**
-     * Détermine le niveau de risque selon l'algorithme du Sprint 3
+     * Determine risk level according to Sprint 3 algorithm
+     *
+     * @param age the patient age
+     * @param gender the patient gender (M or F)
+     * @param triggerCount the number of triggers found
+     * @return the risk level
      */
     private RiskLevel determineRiskLevel(int age, String gender, int triggerCount) {
         boolean isMale = "M".equalsIgnoreCase(gender);
         boolean isYoung = age < 30;
 
-        // Règles pour les patients de moins de 30 ans
+        // Rules for patients under 30 years old
         if (isYoung) {
             if (isMale) {
-                // Homme < 30 ans
+                // Male < 30 years
                 if (triggerCount >= 5) return RiskLevel.EARLY_ONSET;
                 if (triggerCount >= 3) return RiskLevel.IN_DANGER;
             } else {
-                // Femme < 30 ans
+                // Female < 30 years
                 if (triggerCount >= 7) return RiskLevel.EARLY_ONSET;
                 if (triggerCount >= 4) return RiskLevel.IN_DANGER;
             }
             return RiskLevel.NONE;
         }
 
-        // Règles pour les patients de 30 ans et plus
+        // Rules for patients 30 years and older
         if (age >= 30) {
             if (triggerCount >= 8) return RiskLevel.EARLY_ONSET;
             if (triggerCount >= 6) return RiskLevel.IN_DANGER;
@@ -152,7 +164,13 @@ public class RiskAssessmentService {
     }
 
     /**
-     * Construit un message personnalisé pour l'évaluation du risque
+     * Build a custom message for the risk assessment
+     *
+     * @param patient the patient data
+     * @param age the patient age
+     * @param riskLevel the assessed risk level
+     * @param triggerCount the number of triggers found
+     * @return the formatted message
      */
     private String buildRiskMessage(PatientDTO patient, int age, RiskLevel riskLevel, int triggerCount) {
         String patientName = patient.getFirstName() + " " + patient.getLastName();

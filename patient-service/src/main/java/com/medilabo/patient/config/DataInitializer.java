@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 /**
- * Initialisation des données de test - Sprint 1 & 2
- * Charge les 4 patients de test pour les évaluations de risque
+ * Test data initialization -
  */
 @Component
 @RequiredArgsConstructor
@@ -22,32 +21,42 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Vérifier si les patients de test existent déjà
+        // Check if test patients already exist
         if (patientRepository.count() < 4) {
-            log.info("Initialisation des 4 patients de test");
+            log.info("Initializing 4 test patients");
 
-            // Patient 1: TestNone - Aucun risque
+            // Patient 1: TestNone - No risk
             createPatient("Test", "TestNone", LocalDate.of(1966, 12, 31), "F",
                 "1 Brookside St", "100-222-3333");
 
-            // Patient 2: TestBorderline - Risque limité
+            // Patient 2: TestBorderline - Borderline risk
             createPatient("Test", "TestBorderline", LocalDate.of(1945, 6, 24), "M",
                 "2 High St", "200-333-4444");
 
-            // Patient 3: TestInDanger - En danger
+            // Patient 3: TestInDanger - In Danger
             createPatient("Test", "TestInDanger", LocalDate.of(2004, 6, 18), "M",
                 "3 Club Road", "300-444-5555");
 
-            // Patient 4: TestEarlyOnset - Apparition précoce
+            // Patient 4: TestEarlyOnset - Early onset
             createPatient("Test", "TestEarlyOnset", LocalDate.of(2002, 6, 28), "F",
                 "4 Valley Dr", "400-555-6666");
 
-            log.info("4 patients de test créés avec succès");
+            log.info("4 test patients created successfully");
         } else {
-            log.info("Patients de test déjà existants dans la base de données");
+            log.info("Test patients already exist in database");
         }
     }
 
+    /**
+     * Creates and saves a patient
+     *
+     * @param firstName the patient's first name
+     * @param lastName the patient's last name
+     * @param birthDate the patient's birth date
+     * @param gender the patient's gender
+     * @param address the patient's address
+     * @param phoneNumber the patient's phone number
+     */
     private void createPatient(String firstName, String lastName, LocalDate birthDate,
                               String gender, String address, String phoneNumber) {
         Patient patient = new Patient();
@@ -58,7 +67,7 @@ public class DataInitializer implements CommandLineRunner {
         patient.setAddress(address);
         patient.setPhoneNumber(phoneNumber);
         patientRepository.save(patient);
-        log.debug("Patient créé: {} {}", firstName, lastName);
+        log.debug("Patient created: {} {}", firstName, lastName);
     }
 }
 

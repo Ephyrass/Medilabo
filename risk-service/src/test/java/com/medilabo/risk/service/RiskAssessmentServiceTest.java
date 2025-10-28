@@ -19,6 +19,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for RiskAssessmentService
+ */
 @ExtendWith(MockitoExtension.class)
 class RiskAssessmentServiceTest {
 
@@ -35,7 +38,7 @@ class RiskAssessmentServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Patient homme < 30 ans
+        // Male patient < 30 years
         youngMalePatient = new PatientDTO();
         youngMalePatient.setId("1");
         youngMalePatient.setFirstName("Lucas");
@@ -43,7 +46,7 @@ class RiskAssessmentServiceTest {
         youngMalePatient.setBirthDate(LocalDate.now().minusYears(25));
         youngMalePatient.setGender("M");
 
-        // Patient femme < 30 ans
+        // Female patient < 30 years
         youngFemalePatient = new PatientDTO();
         youngFemalePatient.setId("2");
         youngFemalePatient.setFirstName("Pippa");
@@ -51,7 +54,7 @@ class RiskAssessmentServiceTest {
         youngFemalePatient.setBirthDate(LocalDate.now().minusYears(27));
         youngFemalePatient.setGender("F");
 
-        // Patient homme >= 30 ans
+        // Male patient >= 30 years
         olderMalePatient = new PatientDTO();
         olderMalePatient.setId("3");
         olderMalePatient.setFirstName("Edward");
@@ -59,7 +62,7 @@ class RiskAssessmentServiceTest {
         olderMalePatient.setBirthDate(LocalDate.now().minusYears(45));
         olderMalePatient.setGender("M");
 
-        // Patient femme >= 30 ans
+        // Female patient >= 30 years
         olderFemalePatient = new PatientDTO();
         olderFemalePatient.setId("4");
         olderFemalePatient.setFirstName("Natalie");
@@ -89,8 +92,8 @@ class RiskAssessmentServiceTest {
     void testBorderlineRisk_OlderPatient_2Triggers() {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
-            createNote("3", "Patient reports: Hémoglobine A1C levels slightly elevated"),
-            createNote("3", "Patient has high Cholestérol")
+            createNote("3", "Patient reports: Hemoglobin A1C levels slightly elevated"),
+            createNote("3", "Patient has high Cholesterol")
         );
         when(microserviceClient.getPatient("3")).thenReturn(olderMalePatient);
         when(microserviceClient.getPatientNotes("3")).thenReturn(notes);
@@ -108,9 +111,9 @@ class RiskAssessmentServiceTest {
     void testInDangerRisk_YoungMale_3Triggers() {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
-            createNote("1", "Patient is Fumeur"),
-            createNote("1", "Taille: 180cm, Poids: 95kg"),
-            createNote("1", "Cholestérol levels are concerning")
+            createNote("1", "Patient is Smoker"),
+            createNote("1", "Height: 180cm, Weight: 95kg"),
+            createNote("1", "Cholesterol levels are concerning")
         );
         when(microserviceClient.getPatient("1")).thenReturn(youngMalePatient);
         when(microserviceClient.getPatientNotes("1")).thenReturn(notes);
@@ -128,10 +131,10 @@ class RiskAssessmentServiceTest {
     void testInDangerRisk_YoungFemale_4Triggers() {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
-            createNote("2", "Patient has Hémoglobine A1C issue"),
-            createNote("2", "Fumeuse, needs to quit"),
-            createNote("2", "Anormal test results"),
-            createNote("2", "Cholestérol level high")
+            createNote("2", "Patient has Hemoglobin A1C issue"),
+            createNote("2", "Smoker, needs to quit"),
+            createNote("2", "Abnormal test results"),
+            createNote("2", "Cholesterol level high")
         );
         when(microserviceClient.getPatient("2")).thenReturn(youngFemalePatient);
         when(microserviceClient.getPatientNotes("2")).thenReturn(notes);
@@ -149,9 +152,9 @@ class RiskAssessmentServiceTest {
     void testEarlyOnsetRisk_YoungMale_5Triggers() {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
-            createNote("1", "Hémoglobine A1C elevated, Microalbumine detected"),
-            createNote("1", "Patient is Fumeur, Taille: 180cm, Poids: 95kg"),
-            createNote("1", "Cholestérol levels are Anormal")
+            createNote("1", "Hemoglobin A1C elevated, Microalbumin detected"),
+            createNote("1", "Patient is Smoker, Height: 180cm, Weight: 95kg"),
+            createNote("1", "Cholesterol levels are Abnormal")
         );
         when(microserviceClient.getPatient("1")).thenReturn(youngMalePatient);
         when(microserviceClient.getPatientNotes("1")).thenReturn(notes);
@@ -169,10 +172,10 @@ class RiskAssessmentServiceTest {
     void testEarlyOnsetRisk_OlderPatient_8Triggers() {
         // Arrange
         List<NoteDTO> notes = Arrays.asList(
-            createNote("4", "Hémoglobine A1C, Microalbumine, Taille, Poids issues"),
-            createNote("4", "Fumeuse, Anormal results"),
-            createNote("4", "Cholestérol, Vertiges reported"),
-            createNote("4", "Rechute noted, Réaction observed")
+            createNote("4", "Hemoglobin A1C, Microalbumin, Height, Weight issues"),
+            createNote("4", "Smoker, Abnormal results"),
+            createNote("4", "Cholesterol, Dizziness reported"),
+            createNote("4", "Relapse noted, Reaction observed")
         );
         when(microserviceClient.getPatient("4")).thenReturn(olderFemalePatient);
         when(microserviceClient.getPatientNotes("4")).thenReturn(notes);
@@ -197,6 +200,13 @@ class RiskAssessmentServiceTest {
         });
     }
 
+    /**
+     * Helper method to create a note for testing
+     *
+     * @param patientId the patient ID
+     * @param content the note content
+     * @return the created note DTO
+     */
     private NoteDTO createNote(String patientId, String content) {
         NoteDTO note = new NoteDTO();
         note.setId("note-" + System.nanoTime());

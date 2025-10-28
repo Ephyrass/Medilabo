@@ -9,11 +9,16 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 /**
- * Configuration CORS pour permettre les appels depuis le frontend
+ * CORS configuration to allow calls from the frontend
  */
 @Configuration
 public class CorsConfig {
 
+    /**
+     * Configures CORS web filter to allow frontend requests
+     *
+     * @return the configured CORS web filter
+     */
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
