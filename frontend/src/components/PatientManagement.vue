@@ -101,7 +101,6 @@
                 </div>
               </div>
 
-              <!-- Diabetes Risk Assessment (Sprint 3) -->
               <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
@@ -164,7 +163,6 @@
         </div>
       </div>
     </div>
-    <!-- Add/Edit Modal -->
     <PatientModal
       v-if="showModal"
       :patient="selectedPatient"
@@ -172,7 +170,6 @@
       @save="savePatient"
     />
 
-    <!-- Notes Modal (Sprint 2) -->
     <PatientNotesModal
       v-if="showNotesModal && selectedPatientForNotes"
       :patient="selectedPatientForNotes"
@@ -180,7 +177,6 @@
       @noteAdded="handleNoteAdded"
     />
 
-    <!-- Delete Confirmation Modal -->
     <ConfirmModal
       v-if="showDeleteConfirm && patientToDelete"
       title="Delete Patient"
