@@ -329,20 +329,24 @@ const calculateAge = (birthDate) => {
 
 const getRiskBadgeClass = (riskLevel) => {
   const classes = {
-    'NONE': 'bg-green-100 text-green-800',
-    'BORDERLINE': 'bg-yellow-100 text-yellow-800',
-    'IN_DANGER': 'bg-orange-100 text-orange-800',
-    'EARLY_ONSET': 'bg-red-100 text-red-800'
+    NONE: 'bg-green-100 text-green-800',
+    BORDERLINE: 'bg-yellow-100 text-yellow-800',
+    IN_DANGER: 'bg-orange-100 text-orange-800',
+    EARLY_ONSET: 'bg-red-100 text-red-800',
+    None: 'bg-green-100 text-green-800',
+    Borderline: 'bg-yellow-100 text-yellow-800'
   }
   return classes[riskLevel] || 'bg-gray-100 text-gray-800'
 }
 
 const formatRiskLevel = (riskLevel) => {
   const labels = {
-    'NONE': 'None',
-    'BORDERLINE': 'Borderline',
-    'IN_DANGER': 'In Danger',
-    'EARLY_ONSET': 'Early Onset'
+    NONE: 'No risk',
+    BORDERLINE: 'Borderline Risk',
+    IN_DANGER: 'In Danger',
+    EARLY_ONSET: 'Early onset',
+    None: 'No risk',
+    Borderline: 'Borderline Risk'
   }
   return labels[riskLevel] || riskLevel
 }

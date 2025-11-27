@@ -49,25 +49,22 @@ public class RiskAssessmentService {
     public RiskAssessmentDTO assessDiabetesRisk(String patientId) {
         log.info("Assessing diabetes risk for patient ID: {}", patientId);
 
-        // 1. Retrieve patient information
+
         PatientDTO patient = microserviceClient.getPatient(patientId);
         if (patient == null) {
             throw new RuntimeException("Patient not found with ID: " + patientId);
         }
 
-        // 2. Retrieve patient notes
+
         List<NoteDTO> notes = microserviceClient.getPatientNotes(patientId);
 
-        // 3. Calculate patient age
         int age = calculateAge(patient.getBirthDate());
 
-        // 4. Count triggers in notes
         int triggerCount = countTriggers(notes);
 
-        // 5. Determine risk level
         RiskLevel riskLevel = determineRiskLevel(age, patient.getGender(), triggerCount);
 
-        // 6. Build message
+
         String message = buildRiskMessage(patient, age, riskLevel, triggerCount);
 
         log.info("Risk assessment completed for patient {}: {} (triggers: {})",
@@ -105,7 +102,6 @@ public class RiskAssessmentService {
             return 0;
         }
 
-        // Concatenate all notes into one text
         StringBuilder allNotes = new StringBuilder();
         for (NoteDTO note : notes) {
             if (note.getContent() != null) {
@@ -116,7 +112,6 @@ public class RiskAssessmentService {
         String fullText = allNotes.toString();
         int count = 0;
 
-        // Count each trigger (each trigger counts only once)
         for (String trigger : DIABETES_TRIGGERS) {
             if (fullText.contains(trigger.toLowerCase())) {
                 count++;
@@ -139,14 +134,11 @@ public class RiskAssessmentService {
         boolean isMale = "M".equalsIgnoreCase(gender);
         boolean isYoung = age < 30;
 
-        // Rules for patients under 30 years old
         if (isYoung) {
             if (isMale) {
-                // Male < 30 years
                 if (triggerCount >= 5) return RiskLevel.EARLY_ONSET;
                 if (triggerCount >= 3) return RiskLevel.IN_DANGER;
             } else {
-                // Female < 30 years
                 if (triggerCount >= 7) return RiskLevel.EARLY_ONSET;
                 if (triggerCount >= 4) return RiskLevel.IN_DANGER;
             }
