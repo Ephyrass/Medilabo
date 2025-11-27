@@ -36,7 +36,6 @@ services:
     networks:
       - medilabo-network
 
-  # Note Microservice (Sprint 2)
   note-service:
     build:
       context: ./note-service
@@ -52,7 +51,6 @@ services:
     networks:
       - medilabo-network
 
-  # Risk Assessment Service (Sprint 3)
   risk-service:
     build:
       context: ./risk-service
