@@ -21,6 +21,16 @@
       </div>
 
       <div class="flex-1 overflow-y-auto p-6">
+        <!-- Success Message -->
+        <div v-if="successMessage" class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center">
+          <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <div>
+            <p class="text-sm font-medium text-green-800">{{ successMessage }}</p>
+          </div>
+        </div>
+
         <!-- Add Note Form -->
         <div class="bg-indigo-50 rounded-lg p-4 mb-6">
           <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
@@ -162,6 +172,7 @@ const loading = ref(true)
 const saving = ref(false)
 const showDeleteConfirm = ref(false)
 const noteToDelete = ref(null)
+const successMessage = ref(null)
 
 const newNote = ref({
   content: '',
@@ -187,6 +198,7 @@ const addNote = async () => {
   }
 
   saving.value = true
+  successMessage.value = null
   try {
     await axios.post('/api/notes', {
       patientId: props.patient.id,
@@ -200,6 +212,21 @@ const addNote = async () => {
 
     // Refresh notes
     await fetchNotes()
+
+    // Update risk assessment after note is added
+    try {
+      await axios.get(`/api/risk/${props.patient.id}`)
+      successMessage.value = 'Note enregistrée et risque mis à jour avec succès!'
+    } catch (err) {
+      successMessage.value = 'Note enregistrée, mais la mise à jour du risque a rencontré une erreur.'
+      console.warn('Note added but risk assessment update had an issue:', err)
+    }
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      successMessage.value = null
+    }, 3000)
+
     emit('noteAdded')
   } catch (err) {
     console.error('Error adding note:', err)

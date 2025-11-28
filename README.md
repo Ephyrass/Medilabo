@@ -225,46 +225,6 @@ Medilabo/
 └── frontend/                   # Coming soon - User interface
 ```
 
-## 🔄 Sprints
-
-### Sprint 1 - ✅ Completed
-- [x] Microservices architecture with Gateway
-- [x] Patient Microservice with MongoDB
-- [x] Dockerization
-- [x] Test data for 4 patients
-
-### Sprint 2 - 🚧 In Progress
-- [ ] Note Microservice (MongoDB)
-- [ ] Medical notes management
-- [ ] Patient history
-
-### Sprint 3 - 📋 To Do
-- [ ] Risk Assessment Microservice
-- [ ] Diabetes risk assessment
-- [ ] Business rules for risk levels
-
-## 📝 User Stories
-
-### Sprint 1
-1. **View patient personal information** ✅
-   - As an organizer, I would like to view my patients' personal information
-
-2. **Update personal information** ✅
-   - As an organizer, I would like to update personal information
-
-3. **Add patient personal information** ✅
-   - As an organizer, I would like to add patient personal information
-
-### Sprint 2
-4. **View patient history** 🚧
-   - As a practitioner, I want to see my patient's information history
-
-5. **Add note to history** 🚧
-   - As a practitioner, I want to add an observation note
-
-### Sprint 3
-6. **Generate diabetes report** 📋
-   - As a practitioner, I want to view diabetes risk
 
 ## 🧪 Tests
 
@@ -295,17 +255,3 @@ curl -X PUT http://localhost:8080/api/patients/{id} \
     "phoneNumber": "01-98-76-54-32"
   }'
 ```
-
-## 📖 Additional Documentation
-
-- ARCHITECTURE.md — Detailed architecture documentation
-- gateway/README.md — Gateway documentation (see gateway/README.md)
-- PDF/ — Specifications and test case documents
-
-## 👥 Team
-
-Medilabo Project - OpenClassrooms Java DA
-
-## 📄 License
-
-Educational Project - OpenClassrooms

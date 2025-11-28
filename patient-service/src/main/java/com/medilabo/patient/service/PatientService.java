@@ -23,7 +23,6 @@ public class PatientService {
 
     /**
      * View personal information of patients
-     * User Story: As an organizer, I would like to view the personal information of my patients
      *
      * @return list of all patients
      */
@@ -45,7 +44,6 @@ public class PatientService {
 
     /**
      * Add personal information of patients
-     * User Story: As an organizer, I would like to add personal information to patients
      *
      * @param patient the patient to add
      * @return the saved patient
@@ -57,7 +55,6 @@ public class PatientService {
 
     /**
      * Update personal information
-     * User Story: As an organizer, I would like to update the personal information of my patients
      *
      * @param id the patient ID
      * @param patientDetails the updated patient details

@@ -264,9 +264,23 @@ const closeNotesModal = () => {
   selectedPatientForNotes.value = null
 }
 
-const handleNoteAdded = () => {
-  // Optionnel : rafraîchir la liste des patients ou afficher un message
-  console.log('Note added successfully')
+const handleNoteAdded = async () => {
+  if (selectedPatientForNotes.value) {
+    selectedPatientForNotes.value.riskLoading = true
+    try {
+      const response = await axios.get(`/api/risk/${selectedPatientForNotes.value.id}`)
+      selectedPatientForNotes.value.riskAssessment = response.data
+
+      const patientIndex = patients.value.findIndex(p => p.id === selectedPatientForNotes.value.id)
+      if (patientIndex !== -1) {
+        patients.value[patientIndex].riskAssessment = response.data
+      }
+    } catch (err) {
+      console.warn('Could not refresh risk assessment:', err.message)
+    } finally {
+      selectedPatientForNotes.value.riskLoading = false
+    }
+  }
 }
 
 const savePatient = async (patientData) => {
