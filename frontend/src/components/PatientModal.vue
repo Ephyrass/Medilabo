@@ -85,7 +85,7 @@
                 Phone Number
               </label>
               <input
-                v-model="form.phoneNumber"
+                v-model="form.contactInfo.phoneNumber"
                 type="tel"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="123-456-7890"
@@ -97,7 +97,7 @@
                 Address
               </label>
               <textarea
-                v-model="form.address"
+                v-model="form.contactInfo.address"
                 rows="3"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="123 Main Street, City, State, ZIP"
@@ -144,8 +144,10 @@ const form = ref({
   lastName: '',
   birthDate: '',
   gender: '',
-  phoneNumber: '',
-  address: ''
+  contactInfo: {
+    phoneNumber: '',
+    address: ''
+  }
 })
 
 const isEdit = computed(() => !!props.patient?.id)
@@ -156,7 +158,14 @@ const maxDate = computed(() => {
 
 const handleSubmit = () => {
   const patientData = {
-    ...form.value
+    firstName: form.value.firstName,
+    lastName: form.value.lastName,
+    birthDate: form.value.birthDate,
+    gender: form.value.gender,
+    contactInfo: {
+      phoneNumber: form.value.contactInfo.phoneNumber,
+      address: form.value.contactInfo.address
+    }
   }
   if (isEdit.value) {
     patientData.id = props.patient.id
@@ -166,7 +175,16 @@ const handleSubmit = () => {
 
 onMounted(() => {
   if (props.patient) {
-    form.value = { ...props.patient }
+    form.value = {
+      firstName: props.patient.firstName,
+      lastName: props.patient.lastName,
+      birthDate: props.patient.birthDate,
+      gender: props.patient.gender,
+      contactInfo: {
+        phoneNumber: props.patient.contactInfo?.phoneNumber || '',
+        address: props.patient.contactInfo?.address || ''
+      }
+    }
   }
 })
 </script>

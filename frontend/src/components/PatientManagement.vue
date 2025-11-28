@@ -86,18 +86,18 @@
               </div>
 
               <div class="mt-4 grid grid-cols-2 gap-4">
-                <div v-if="patient.phoneNumber" class="flex items-center text-sm text-gray-600">
+                <div v-if="patient.contactInfo?.phoneNumber" class="flex items-center text-sm text-gray-600">
                   <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  {{ patient.phoneNumber }}
+                  {{ patient.contactInfo.phoneNumber }}
                 </div>
-                <div v-if="patient.address" class="flex items-center text-sm text-gray-600">
+                <div v-if="patient.contactInfo?.address" class="flex items-center text-sm text-gray-600">
                   <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  {{ patient.address }}
+                  {{ patient.contactInfo.address }}
                 </div>
               </div>
 
@@ -189,7 +189,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { patientService, riskService } from '../services/api'
 import PatientModal from './PatientModal.vue'
 import PatientNotesModal from './PatientNotesModal.vue'
 import ConfirmModal from './ConfirmModal.vue'
@@ -208,10 +208,10 @@ const fetchPatients = async () => {
   loading.value = true
   error.value = null
   try {
-    const res = await axios.get('/api/patients')
-    patients.value = res.data
+    const res = await patientService.getAllPatients()
+    const data = Array.isArray(res.data) ? res.data : []
+    patients.value = data
 
-    // Fetch risk assessment for each patient (Sprint 3)
     await fetchRiskAssessments()
   } catch (err) {
     error.value = err.message || 'Failed to fetch patients'
@@ -222,11 +222,10 @@ const fetchPatients = async () => {
 }
 
 const fetchRiskAssessments = async () => {
-  // Fetch risk assessment for each patient in parallel
   const riskPromises = patients.value.map(async (patient) => {
     patient.riskLoading = true
     try {
-      const response = await axios.get(`/api/risk/${patient.id}`)
+      const response = await riskService.assessRisk(patient.id)
       patient.riskAssessment = response.data
     } catch (err) {
       console.warn(`Could not fetch risk for patient ${patient.id}:`, err.message)
@@ -268,7 +267,7 @@ const handleNoteAdded = async () => {
   if (selectedPatientForNotes.value) {
     selectedPatientForNotes.value.riskLoading = true
     try {
-      const response = await axios.get(`/api/risk/${selectedPatientForNotes.value.id}`)
+      const response = await riskService.assessRisk(selectedPatientForNotes.value.id)
       selectedPatientForNotes.value.riskAssessment = response.data
 
       const patientIndex = patients.value.findIndex(p => p.id === selectedPatientForNotes.value.id)
@@ -286,9 +285,9 @@ const handleNoteAdded = async () => {
 const savePatient = async (patientData) => {
   try {
     if (patientData.id) {
-      await axios.put(`/api/patients/${patientData.id}`, patientData)
+      await patientService.updatePatient(patientData.id, patientData)
     } else {
-      await axios.post('/api/patients', patientData)
+      await patientService.createPatient(patientData)
     }
     await fetchPatients()
     closeModal()
@@ -305,7 +304,7 @@ const confirmDelete = (patient) => {
 
 const deletePatient = async () => {
   try {
-    await axios.delete(`/api/patients/${patientToDelete.value.id}`)
+    await patientService.deletePatient(patientToDelete.value.id)
     await fetchPatients()
     showDeleteConfirm.value = false
     patientToDelete.value = null

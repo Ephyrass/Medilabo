@@ -37,7 +37,7 @@ public class PatientService {
      * @param id the patient ID
      * @return optional containing the patient if found
      */
-    public Optional<Patient> getPatientById(String id) {
+    public Optional<Patient> getPatientById(Long id) {
         log.info("Fetching patient with ID: {}", id);
         return patientRepository.findById(id);
     }
@@ -60,7 +60,7 @@ public class PatientService {
      * @param patientDetails the updated patient details
      * @return optional containing the updated patient if found
      */
-    public Optional<Patient> updatePatient(String id, Patient patientDetails) {
+    public Optional<Patient> updatePatient(Long id, Patient patientDetails) {
         log.info("Updating patient with ID: {}", id);
         return patientRepository.findById(id)
                 .map(patient -> {
@@ -68,8 +68,9 @@ public class PatientService {
                     patient.setLastName(patientDetails.getLastName());
                     patient.setBirthDate(patientDetails.getBirthDate());
                     patient.setGender(patientDetails.getGender());
-                    patient.setAddress(patientDetails.getAddress());
-                    patient.setPhoneNumber(patientDetails.getPhoneNumber());
+                    if (patientDetails.getContactInfo() != null) {
+                        patient.setContactInfo(patientDetails.getContactInfo());
+                    }
                     return patientRepository.save(patient);
                 });
     }
@@ -80,7 +81,7 @@ public class PatientService {
      * @param id the patient ID
      * @return true if deleted, false if not found
      */
-    public boolean deletePatient(String id) {
+    public boolean deletePatient(Long id) {
         log.info("Deleting patient with ID: {}", id);
         if (patientRepository.existsById(id)) {
             patientRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package com.medilabo.patient.service;
 
+import com.medilabo.patient.model.ContactInfo;
 import com.medilabo.patient.model.Patient;
 import com.medilabo.patient.repository.PatientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,29 +32,31 @@ class PatientServiceTest {
     private PatientService patientService;
 
     private Patient testPatient;
+    private ContactInfo testContactInfo;
 
     @BeforeEach
     void setUp() {
+        testContactInfo = new ContactInfo();
+        testContactInfo.setId(1L);
+        testContactInfo.setAddress("123 Main St");
+        testContactInfo.setPhoneNumber("555-1234");
+
         testPatient = new Patient();
-        testPatient.setId("1");
+        testPatient.setId(1L);
         testPatient.setFirstName("John");
         testPatient.setLastName("Doe");
         testPatient.setBirthDate(LocalDate.of(1990, 1, 1));
         testPatient.setGender("M");
-        testPatient.setAddress("123 Main St");
-        testPatient.setPhoneNumber("555-1234");
+        testPatient.setContactInfo(testContactInfo);
     }
 
     @Test
     void testGetAllPatients_ShouldReturnAllPatients() {
-        // Arrange
         List<Patient> patients = Arrays.asList(testPatient, new Patient());
         when(patientRepository.findAll()).thenReturn(patients);
 
-        // Act
         List<Patient> result = patientService.getAllPatients();
 
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(patientRepository, times(1)).findAll();
@@ -61,41 +64,32 @@ class PatientServiceTest {
 
     @Test
     void testGetPatientById_WhenPatientExists_ShouldReturnPatient() {
-        // Arrange
-        when(patientRepository.findById("1")).thenReturn(Optional.of(testPatient));
+        when(patientRepository.findById(1L)).thenReturn(Optional.of(testPatient));
 
-        // Act
-        Optional<Patient> result = patientService.getPatientById("1");
+        Optional<Patient> result = patientService.getPatientById(1L);
 
-        // Assert
         assertTrue(result.isPresent());
         assertEquals("John", result.get().getFirstName());
         assertEquals("Doe", result.get().getLastName());
-        verify(patientRepository, times(1)).findById("1");
+        verify(patientRepository, times(1)).findById(1L);
     }
 
     @Test
     void testGetPatientById_WhenPatientDoesNotExist_ShouldReturnEmpty() {
-        // Arrange
-        when(patientRepository.findById("999")).thenReturn(Optional.empty());
+        when(patientRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Act
-        Optional<Patient> result = patientService.getPatientById("999");
+        Optional<Patient> result = patientService.getPatientById(999L);
 
-        // Assert
         assertFalse(result.isPresent());
-        verify(patientRepository, times(1)).findById("999");
+        verify(patientRepository, times(1)).findById(999L);
     }
 
     @Test
     void testAddPatient_ShouldSaveAndReturnPatient() {
-        // Arrange
         when(patientRepository.save(any(Patient.class))).thenReturn(testPatient);
 
-        // Act
         Patient result = patientService.addPatient(testPatient);
 
-        // Assert
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("Doe", result.getLastName());
@@ -104,71 +98,63 @@ class PatientServiceTest {
 
     @Test
     void testUpdatePatient_WhenPatientExists_ShouldUpdateAndReturn() {
-        // Arrange
+        ContactInfo updatedContactInfo = new ContactInfo();
+        updatedContactInfo.setId(2L);
+        updatedContactInfo.setAddress("456 Oak Ave");
+        updatedContactInfo.setPhoneNumber("555-5678");
+
         Patient updatedPatient = new Patient();
         updatedPatient.setFirstName("Jane");
         updatedPatient.setLastName("Smith");
         updatedPatient.setBirthDate(LocalDate.of(1985, 5, 15));
         updatedPatient.setGender("F");
-        updatedPatient.setAddress("456 Oak Ave");
-        updatedPatient.setPhoneNumber("555-5678");
+        updatedPatient.setContactInfo(updatedContactInfo);
 
-        when(patientRepository.findById("1")).thenReturn(Optional.of(testPatient));
+        when(patientRepository.findById(1L)).thenReturn(Optional.of(testPatient));
         when(patientRepository.save(any(Patient.class))).thenReturn(testPatient);
 
-        // Act
-        Optional<Patient> result = patientService.updatePatient("1", updatedPatient);
+        Optional<Patient> result = patientService.updatePatient(1L, updatedPatient);
 
-        // Assert
         assertTrue(result.isPresent());
         assertEquals("Jane", result.get().getFirstName());
         assertEquals("Smith", result.get().getLastName());
-        verify(patientRepository, times(1)).findById("1");
+        verify(patientRepository, times(1)).findById(1L);
         verify(patientRepository, times(1)).save(any(Patient.class));
     }
 
     @Test
     void testUpdatePatient_WhenPatientDoesNotExist_ShouldReturnEmpty() {
-        // Arrange
         Patient updatedPatient = new Patient();
-        when(patientRepository.findById("999")).thenReturn(Optional.empty());
+        when(patientRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Act
-        Optional<Patient> result = patientService.updatePatient("999", updatedPatient);
+        Optional<Patient> result = patientService.updatePatient(999L, updatedPatient);
 
-        // Assert
         assertFalse(result.isPresent());
-        verify(patientRepository, times(1)).findById("999");
+        verify(patientRepository, times(1)).findById(999L);
         verify(patientRepository, never()).save(any(Patient.class));
     }
 
     @Test
     void testDeletePatient_WhenPatientExists_ShouldReturnTrue() {
-        // Arrange
-        when(patientRepository.existsById("1")).thenReturn(true);
-        doNothing().when(patientRepository).deleteById("1");
+        when(patientRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(patientRepository).deleteById(1L);
 
-        // Act
-        boolean result = patientService.deletePatient("1");
+        boolean result = patientService.deletePatient(1L);
 
-        // Assert
         assertTrue(result);
-        verify(patientRepository, times(1)).existsById("1");
-        verify(patientRepository, times(1)).deleteById("1");
+        verify(patientRepository, times(1)).existsById(1L);
+        verify(patientRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void testDeletePatient_WhenPatientDoesNotExist_ShouldReturnFalse() {
-        // Arrange
-        when(patientRepository.existsById("999")).thenReturn(false);
+        when(patientRepository.existsById(999L)).thenReturn(false);
 
-        // Act
-        boolean result = patientService.deletePatient("999");
+        boolean result = patientService.deletePatient(999L);
 
-        // Assert
         assertFalse(result);
-        verify(patientRepository, times(1)).existsById("999");
-        verify(patientRepository, never()).deleteById(anyString());
+        verify(patientRepository, times(1)).existsById(999L);
+        verify(patientRepository, never()).deleteById(any());
     }
 }
 

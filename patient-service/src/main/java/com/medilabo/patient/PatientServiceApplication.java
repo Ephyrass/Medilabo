@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Patient Service
- * Microservice for managing patient records with MongoDB
+ * Microservice for managing patient records with PostgreSQL SQL database
  */
 @SpringBootApplication
 public class PatientServiceApplication {

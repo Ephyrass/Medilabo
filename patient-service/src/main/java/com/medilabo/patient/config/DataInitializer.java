@@ -1,5 +1,6 @@
 package com.medilabo.patient.config;
 
+import com.medilabo.patient.model.ContactInfo;
 import com.medilabo.patient.model.Patient;
 import com.medilabo.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 /**
- * Test data initialization -
+ * Test data initialization
  */
 @Component
 @RequiredArgsConstructor
@@ -21,23 +22,18 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Check if test patients already exist
         if (patientRepository.count() < 4) {
             log.info("Initializing 4 test patients");
 
-            // Patient 1: TestNone - No risk
             createPatient("Test", "TestNone", LocalDate.of(1966, 12, 31), "F",
                 "1 Brookside St", "100-222-3333");
 
-            // Patient 2: TestBorderline - Borderline risk
             createPatient("Test", "TestBorderline", LocalDate.of(1945, 6, 24), "M",
                 "2 High St", "200-333-4444");
 
-            // Patient 3: TestInDanger - In Danger
             createPatient("Test", "TestInDanger", LocalDate.of(2004, 6, 18), "M",
                 "3 Club Road", "300-444-5555");
 
-            // Patient 4: TestEarlyOnset - Early onset
             createPatient("Test", "TestEarlyOnset", LocalDate.of(2002, 6, 28), "F",
                 "4 Valley Dr", "400-555-6666");
 
@@ -48,7 +44,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     /**
-     * Creates and saves a patient
+     * Creates and saves a patient with contact information
      *
      * @param firstName the patient's first name
      * @param lastName the patient's last name
@@ -64,8 +60,14 @@ public class DataInitializer implements CommandLineRunner {
         patient.setLastName(lastName);
         patient.setBirthDate(birthDate);
         patient.setGender(gender);
-        patient.setAddress(address);
-        patient.setPhoneNumber(phoneNumber);
+
+        ContactInfo contactInfo = new ContactInfo();
+        contactInfo.setAddress(address);
+        contactInfo.setPhoneNumber(phoneNumber);
+
+        patient.setContactInfo(contactInfo);
+        contactInfo.setPatient(patient);
+
         patientRepository.save(patient);
         log.debug("Patient created: {} {}", firstName, lastName);
     }

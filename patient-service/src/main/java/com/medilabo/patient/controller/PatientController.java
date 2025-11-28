@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/api/patients")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class PatientController {
 
     private final PatientService patientService;
@@ -44,7 +43,7 @@ public class PatientController {
      * @return the patient if found, 404 otherwise
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable String id) {
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         log.info("GET /api/patients/{} - Fetching patient", id);
         return patientService.getPatientById(id)
                 .map(ResponseEntity::ok)
@@ -77,7 +76,7 @@ public class PatientController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(
-            @PathVariable String id,
+            @PathVariable Long id,
             @Valid @RequestBody Patient patient) {
         log.info("PUT /api/patients/{} - Updating patient", id);
         return patientService.updatePatient(id, patient)
@@ -92,7 +91,7 @@ public class PatientController {
      * @return 204 if deleted, 404 if not found
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable String id) {
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         log.info("DELETE /api/patients/{} - Deleting patient", id);
         if (patientService.deletePatient(id)) {
             return ResponseEntity.noContent().build();

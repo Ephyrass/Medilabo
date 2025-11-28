@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/notes")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class NoteController {
 
     private final NoteService noteService;
